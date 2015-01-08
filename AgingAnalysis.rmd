@@ -1,0 +1,99 @@
+---
+title: 'Gerontology & Aging: A Data Science Perspective'
+author: "Bryan Victor"
+date: "Thursday, January 08, 2015"
+output: word_document
+---
+
+The following data are drawn from those journals in the fields of gerontology & aging that are currently indexed by psycINFO.  Data from all available articles (n= 47,281) published in the following journals were included:
+
+Activities, Adaptation & Aging
+Ageing & Society
+Aging & Mental Health
+Aging, Neuropsychology, and Cognition
+The American Journal of Geriatric Psychiatry
+Archives of Gerontology and Geriatrics
+Australasian Journal on Ageing
+Canadian Journal on Aging
+Clinical Gerontologist: The Journal of Aging and Mental Health
+Dementia and Geriatric Cognitive Disorders
+Drugs & Aging
+Educational Gerontology
+European Journal of Ageing
+Experimental Aging Research
+Frontiers in Aging Neuroscience
+Geriatrics & Gerontology International
+Gerontechnology
+The Gerontologist
+Gerontology
+Gerontology & Geriatrics Education
+GeroPsych: The Journal of Gerontopsychology and Geriatric Psychiatry
+The International Journal of Aging & Human Development
+International Journal of Geriatric Psychiatry
+Journal of Aging and Health
+Journal of Aging and Physical Activity
+Journal of Aging Studies
+Journal of Applied Gerontology
+Journal of Cross-Cultural Gerontology
+Journal of Elder Abuse & Neglect
+Journal of Geriatric Psychiatry and Neurology
+Journal of Gerontological Social Work
+Journal of Nutrition in Gerontology and Geriatrics
+Journal of Religion, Spirituality & Aging
+Journal of the American Geriatrics Society
+Journal of Women & Aging
+The Journals of Gerontology: Series A: Biological Sciences and Medical Sciences
+The Journals of Gerontology: Series B: Psychological Sciences and Social Sciences
+Neurobiology of Aging
+Physical & Occupational Therapy in Geriatrics
+Psychology and Aging
+Research on Aging
+Reviews in Clinical Gerontology
+Revista Española de Geriatrí?a y Gerontologí?a
+Tijdschrift voor Gerontologie en Geriatrie
+Zeitschrift für Gerontologie und Geriatrie
+
+```{r, echo=FALSE, comment=NA}
+
+setwd("C:/Users/Tom/Documents/GitHub/AgingDataScience")
+
+AgingWrangle<-read.csv("FINAL_AgingWrangle.csv")
+
+library(dplyr)
+library(stringr)
+library(ggplot2)
+
+```
+
+
+# Which journals have published the most number of articles since being established?
+
+```{r, echo=FALSE, comment=NA}
+n.so.yr <- filter(AgingWrangle, attributes == "SO" | attributes == "YR")
+
+n.so <- filter(AgingWrangle, attributes == "SO") %>% mutate(title = record) %>% 
+        select(-attributes, -record)
+
+n.yr <- filter(AgingWrangle, attributes == "YR") %>% mutate(year = record ) %>% 
+        select(-attributes, -record)
+
+n.yr$year<-as.character(n.yr$year)
+n.yr$year<-as.numeric(n.yr$year)
+
+n.so.yr <- left_join(n.so, n.yr) %>%
+    group_by(title) %>%
+    summarise(first = min(year), last = max(year), n.to.date = n()) %>%
+    arrange(desc(n.to.date))
+
+# 10 highest number of publications
+head(n.so.yr, 10)
+
+```
+
+
+
+```{r, echo=FALSE}
+
+```
+
+
